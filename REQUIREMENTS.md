@@ -44,11 +44,11 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 
 ### Owner
 
-- Owner can set up restaurant name.
-- Owner can configure operating hours.
-- Owner can create table inventory.
-- Owner can generate a QR code.
-- Owner can view basic daily analytics.
+- Owner can set up restaurant name. (done — RESQ-12)
+- Owner can configure operating hours. (done — RESQ-12)
+- Owner can create table inventory. (done — RESQ-12)
+- Owner can generate a QR code. (done — RESQ-6; setup UI RESQ-12)
+- Owner can view basic daily analytics. (RESQ-19)
 
 ### Analytics
 

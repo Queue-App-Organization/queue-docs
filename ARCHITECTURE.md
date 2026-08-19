@@ -66,6 +66,15 @@ Consumes domain events and produces owner-facing metrics:
 - Queue-to-seated conversion.
 - Notification-to-arrival rate.
 
+Implemented at RESQ-18 (MVP set, REQUIREMENTS.md Analytics): a daily
+metrics endpoint (`GET /owner/restaurants/{id}/analytics/daily`) computes
+the seven MVP metrics from the append-only event log only (DEC-006) —
+waiting now, average wait, longest wait, tables occupied, parties served,
+no-shows, cancellations — for any day in the restaurant's own timezone
+(day boundaries converted to UTC; Indian date/time formatting NFR). Exact
+event-derived definitions live in DOMAIN.md (Analytics Metrics). Owner
+role required; other staff roles are denied (SECURITY.md Authorization).
+
 ### Authorization
 
 Owns staff roles and permissions. MVP can start with simple owner/staff roles; V1 can add granular permissions.

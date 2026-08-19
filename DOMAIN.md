@@ -72,6 +72,12 @@ status via a restaurant-scoped public join (the QR encodes the restaurant,
 and the open queue is resolved server-side at join time), then mints an
 unguessable scoped token for the customer's status link (DEC-003).
 
+Walk-ins (RESQ-11): staff add entries with name + party size only; the
+Indian mobile number is optional (validated when provided) and the customer
+row's phone is NULL for phone-less walk-ins. Walk-ins emit QUEUE_JOINED with
+actor = staff and are treated identically to QR joins downstream. Notes are
+deferred (V1).
+
 ### Table
 
 Represents a physical table.

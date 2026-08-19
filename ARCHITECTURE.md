@@ -143,6 +143,30 @@ Recommended environments:
 
 Production release should require passing CI, migrations reviewed, monitoring in place, and explicit approval while the system is young.
 
+## Repository Layout & Tech Stack
+
+Pre-customer baseline (DEC-012: prefer the best clean design; stack is
+reversible until real usage). Decided at RESQ-2 (Foundation wave), 2026-08-19.
+
+```text
+Queue-App-Organization/
+  queue-docs/            docs (product, domain, architecture, security, decisions)
+  queue-api/             backend API + event log
+  queue-web/             frontend SPA (customer mobile web, staff dashboard, owner dashboard)
+  queue-infrastructure/  docker-compose local stack, GitHub Actions CI, deploy tooling
+```
+
+- **queue-api**: Python 3.12, FastAPI, SQLAlchemy 2 (async, asyncpg),
+  Alembic migrations, Postgres 16. `/health` reports app + database status.
+- **queue-web**: React 18 + Vite + TypeScript (single SPA for all three
+  surfaces in MVP).
+- **queue-infrastructure**: `docker-compose.yml` (db + api + web with
+  healthchecks) and GitHub Actions CI (lint, typecheck, unit tests, build).
+- **Realtime**: SSE for the prototype (WebSockets/SSE per this document;
+  polling only as last resort).
+- **Local dev**: `docker compose up` from `queue-infrastructure/`; setup
+  documented in each repo README (target: under 10 minutes).
+
 ## Observability
 
 Minimum observability:

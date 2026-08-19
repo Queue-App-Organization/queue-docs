@@ -80,21 +80,35 @@ If an IDE cannot directly consume `.agents/mcp/mcp.template.json`, create a runt
 
 ## Setup Status
 
-Current setup is a portable template, not a completed credentialed integration.
+**Verified working (2026-08-19) in the Hermes runtime:**
 
-Still required before agents can execute real Jira/GitHub work:
+- Jira: project `RESQ` exists at https://restoq.atlassian.net (company-managed,
+  software). Full agent workflow installed: `Backlog → Ready → In Design →
+  Ready For Engineering → In Progress → Code Review → Ready For QA → In QA →
+  Ready For Deploy → Done` (+ `Blocked`). Story/Task/Sub-task issue types.
+  Board: "RESQ Board". Sandbox verified: create, assign, comment, transition,
+  accept (see sandbox ticket RESQ-1, closed).
+- GitHub: org `Queue-App-Organization` with repos `queue-docs` (public) and
+  `queue-api`, `queue-web`, `queue-infrastructure` (private, bootstrapped).
+  `gh` authenticated; sandbox verified: branch, commit, PR, review comment,
+  close, delete-branch.
+- Local: workspace + local git verified.
 
-- Authenticate to the Atlassian Rovo MCP server.
-- Authenticate to the GitHub MCP server.
-- Create service accounts or tokens.
-- Define exact GitHub repositories.
-- Confirm Jira project key `RESQ`.
-- Validate permissions for each agent role.
-- Test access in at least one runtime.
+Notes:
+
+- The docs historically referenced a `RESQ` project that did not exist (the
+  site's only project was `SCRUM`). The `RESQ` project has been created and is
+  now canonical; `.agents/env/local.env` `JIRA_PROJECT_KEY=RESQ`.
+- Jira REST access uses the API token in `.agents/env/local.env` (never commit
+  it). The Atlassian Rovo MCP OAuth flow is the long-term path.
+- Remaining: branch protection on the code repos (Foundation CI ticket),
+  GitHub MCP OAuth for non-CLI runtimes, and per-role permission validation in
+  at least one more runtime.
 
 ## Recommended Next Step
 
-Create a small sandbox ticket and sandbox repository branch to verify:
+The sandbox loop (below) has been executed and passed; it is now a regression
+check to re-run when the tool contract changes (new runtime, new permissions).
 
 - Hermes can assign a ticket.
 - A specialist agent can read the ticket.

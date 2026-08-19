@@ -341,6 +341,30 @@ RESQ-156: DEVOPS - add staging deployment health checks
 RESQ-170: UX - refine staff table assignment flow
 ```
 
+## Git Branch & PR Policy
+
+Branches (all code repos: queue-api, queue-web, queue-infrastructure):
+
+- `main` — production; merged only via release process (human).
+- `develop` — integration branch for feature work.
+- `uat` — pre-production validation.
+- `feature/<jira-ticket-key>` — one ticket per branch, always branched from fresh `main` (never from another feature branch, never from develop/uat).
+
+PR rules (hard — stacked PRs with wrong bases broke merges once; do not repeat):
+
+- Feature PRs MUST target `develop` in code repos (`gh pr create --base develop`); queue-docs PRs target `main`. ALWAYS pass an explicit `--base` — never rely on tool auto-selection, which can pick the parent feature branch. Verify after opening (`gh pr view <n> --json baseRefName`) and fix with `gh pr edit` if wrong.
+- Fetch all refs (`git fetch origin`) before branching or rebasing; never `git fetch origin <single-branch>` when the local `origin/main` must be current.
+- PR title: `<KEY>: short summary`. PR body: Jira link, summary, acceptance criteria covered, tests run, validation performed, deployment/migration notes, docs updated.
+- Agents never merge PRs and never push to `main`, `develop`, `uat`, or `release/*`.
+
+Ticket lifecycle (owner directive):
+
+`Backlog → Ready → In Design → Ready For Engineering → In Progress → Code Review → Ready For QA → In QA → Ready For Deploy → Done`
+
+- QA owns the QA statuses and tests every ticket with per-AC evidence.
+- A failed QA pass returns the ticket to `Code Review` (assigned back to the implementing agent with repros); the agent fixes on the same feature branch, then the ticket goes `Ready For QA → In QA` for re-testing. No ticket reaches `Ready For Deploy` without a passing QA pass, and no ticket reaches `Done` without the full flow.
+- `develop → uat` and `uat → main` promotions are PR-based and human/DEVOPS steps.
+
 ## Ticket Handoff Protocol
 
 Each handoff should include:

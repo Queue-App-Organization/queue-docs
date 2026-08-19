@@ -130,8 +130,8 @@ Do not build initially:
 ### Reliability
 
 - Queue and table state must not be lost.
-- WhatsApp delivery failures must be visible to staff.
-- Staff must be able to recover from missed or failed notifications.
+- WhatsApp delivery failures must be visible to staff. (done — RESQ-17)
+- Staff must be able to recover from missed or failed notifications. (done — RESQ-17)
 
 ### Performance
 

@@ -187,6 +187,13 @@ V2:
 MVP:
 
 - ETA can be based on simple queue position and average seating rate.
+- Implemented at RESQ-7 as: `estimated wait = live position x average
+  seating rate`, where the live position counts active entries ahead in the
+  current queue and the average seating rate is the mean QUEUE_JOINED ->
+  CUSTOMER_SEATED duration of the current service period (from the event
+  log), falling back to 10 minutes per party before any party has been
+  seated. Terminal entries (seated/cancelled/no-show/skipped) expose no
+  position or ETA.
 
 V1:
 

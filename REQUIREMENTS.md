@@ -15,7 +15,7 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 - Customer can scan a restaurant QR code and open a mobile web check-in flow. (done — RESQ-6)
 - Customer can join with name, Indian phone number, and party size. (done — RESQ-6)
 - Customer can see queue position, estimated wait, and live status. (done — RESQ-7)
-- Customer can cancel their queue entry. (RESQ-8)
+- Customer can cancel their queue entry. (done — RESQ-8)
 - Customer receives WhatsApp confirmation after joining. (RESQ-15)
 - Customer receives WhatsApp table-ready notification. (RESQ-16)
 - Customer does not need to create an account or install an app. (done — RESQ-6)

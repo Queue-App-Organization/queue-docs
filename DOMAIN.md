@@ -126,6 +126,12 @@ ARRIVING -> ARRIVED
 ARRIVING -> NO_SHOW
 ```
 
+CANCELLED semantics (confirmed at RESQ-8): a customer can self-cancel only
+from WAITING (never once called/seated); the transition appends
+QUEUE_ENTRY_CANCELLED with actor = customer; cancelled entries drop out of
+the active queue so remaining positions recalculate, and the staff
+dashboard reflects the cancellation immediately.
+
 ## Table State Machine
 
 Primary path:

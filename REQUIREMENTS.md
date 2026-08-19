@@ -32,7 +32,7 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 - Staff can skip a party. (done — RESQ-10)
 - Staff can cancel a party. (done — RESQ-10)
 - Staff can mark a party as no-show. (done — RESQ-10)
-- Staff can assign a party to a table.
+- Staff can assign a party to a table. (done — RESQ-14)
 
 ### Tables
 
@@ -40,7 +40,7 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 - Each table has a capacity.
 - Each table has a status: available, occupied, or cleaning. (done — RESQ-13)
 - Staff can update table status. (done — RESQ-13)
-- Staff can assign a queue entry to a table.
+- Staff can assign a queue entry to a table. (done — RESQ-14)
 
 ### Owner
 

@@ -67,6 +67,11 @@ Key attributes:
 - Assigned table.
 - Notes.
 
+Confirmed at RESQ-6: the QR check-in creates the entry directly in `WAITING`
+status via a restaurant-scoped public join (the QR encodes the restaurant,
+and the open queue is resolved server-side at join time), then mints an
+unguessable scoped token for the customer's status link (DEC-003).
+
 ### Table
 
 Represents a physical table.

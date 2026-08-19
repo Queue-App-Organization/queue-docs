@@ -115,6 +115,13 @@ Primary path:
 WAITING -> ALMOST_READY -> CALLED -> ARRIVING -> ARRIVED -> SEATED
 ```
 
+Staff shortcuts (RESQ-10, documented with the implementation): the staff
+"call" action may advance WAITING straight to CALLED, and "mark arrived" may
+advance CALLED straight to ARRIVED. ALMOST_READY remains the V1
+almost-ready-alert stage and ARRIVING the V1 "I'm on my way" stage; the
+matrix in queue-api (`app/domain/state_machines.py`) is the exact source of
+truth and every allowed transition maps to a domain event.
+
 Exception paths:
 
 ```text

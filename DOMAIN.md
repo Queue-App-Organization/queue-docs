@@ -197,6 +197,21 @@ MVP:
 - System shows table capacity and status.
 - Staff can override all operational choices.
 
+Implemented at RESQ-14: the staff dashboard shows AVAILABLE tables whose
+capacity fits the party (capacity >= party size) as guidance — no
+recommendation engine (that is V1). Assignment is staff-confirmed only
+(DEC-005) and the server re-checks capacity and availability at assign
+time. Assigning a queue entry to a table sets the table OCCUPIED (T12
+lifecycle) with the entry as its current party, records
+`assigned_table_id` on the entry, and appends TABLE_ASSIGNED with the
+acting staff member and the table state before/after. Unassign and
+reassign are allowed until the party is seated; every step is logged as a
+TABLE_ASSIGNED event (context action: assign / reassign / unassign), so
+the audit trail reconstructs the full assignment lifecycle per table. A
+terminal exit of an assigned entry (cancel / no-show / skip) releases the
+hold automatically. Seated entries keep their table link and the table
+stays OCCUPIED until staff mark it CLEANING (RESQ-13).
+
 V1:
 
 - System recommends compatible tables.

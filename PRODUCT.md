@@ -268,6 +268,11 @@ Don't overlook this.
 
 The onboarding needs to be extremely simple.
 
+> Onboarding P0: **done at RESQ-12** — the owner registers the restaurant
+> (name, address, timezone, operating hours) + owner account in one form at
+> `/setup`, then creates tables and downloads the check-in QR (RESQ-6
+> endpoint). Remaining in this section is purely print/place (offline).
+
 ### Step 1
 
 Restaurant name

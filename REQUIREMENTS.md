@@ -23,9 +23,9 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 ### Staff
 
 - Staff can log in.
-- Staff can see the live waiting list.
-- Staff can add walk-ins manually.
-- Staff can see party size, joined time, wait duration, and status.
+- Staff can see the live waiting list. (done — RESQ-9)
+- Staff can add walk-ins manually. (RESQ-11)
+- Staff can see party size, joined time, wait duration, and status. (done — RESQ-9)
 - Staff can call a party.
 - Staff can mark a party arrived.
 - Staff can mark a party seated.

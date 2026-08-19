@@ -103,6 +103,22 @@ Implementation options:
 - Server-sent events.
 - Polling for early prototype only.
 
+### Realtime transport (confirmed at RESQ-9)
+
+The prototype uses **Server-Sent Events (SSE)**:
+
+- Staff dashboard subscribes to `GET /staff/restaurants/{id}/stream`
+  (authenticated, restaurant-scoped). The server re-pushes a full dashboard
+  snapshot (~every 1.5s) as `event: snapshot`, so joins, cancels, calls,
+  seats and table-status changes surface within ~2 seconds.
+- SSE is one-way (server -> browser), which fits the dashboard's needs;
+  staff actions are plain HTTP POSTs (RESQ-10).
+- The stream's data source is `dashboard_event_generator` (queue-api),
+  which re-reads committed state from Postgres per snapshot - correct in
+  any deployment (multi-worker safe, no broker required).
+- WebSockets can replace SSE later if bidirectional traffic (e.g. live
+  typing) ever justifies it.
+
 ## AI Team / Delivery Architecture
 
 Agent roles, operating rules, human approval gates, backward compatibility policy, and git commit-message requirements are defined in `queue-docs/AGENTS.md`.

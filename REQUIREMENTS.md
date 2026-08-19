@@ -17,7 +17,7 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 - Customer can see queue position, estimated wait, and live status. (done — RESQ-7)
 - Customer can cancel their queue entry. (done — RESQ-8)
 - Customer receives WhatsApp confirmation after joining. (done — RESQ-15)
-- Customer receives WhatsApp table-ready notification. (RESQ-16)
+- Customer receives WhatsApp table-ready notification. (done — RESQ-16)
 - Customer does not need to create an account or install an app. (done — RESQ-6)
 
 ### Staff

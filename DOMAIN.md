@@ -161,6 +161,12 @@ BLOCKED
 COMBINED
 ```
 
+Implementation notes (RESQ-13): AVAILABLE -> OCCUPIED is driven by seating
+a party (RESQ-14) — staff cannot set OCCUPIED manually (the
+occupied-iff-party invariant). Staff can manually mark OCCUPIED -> CLEANING
+(party left) and CLEANING -> AVAILABLE (cleaning done); every change appends
+TABLE_STATUS_CHANGED with the actor and before/after values.
+
 ## Domain Events
 
 Important events:

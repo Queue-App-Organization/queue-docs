@@ -38,8 +38,8 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 
 - Owner or staff can create tables.
 - Each table has a capacity.
-- Each table has a status: available, occupied, or cleaning.
-- Staff can update table status.
+- Each table has a status: available, occupied, or cleaning. (done — RESQ-13)
+- Staff can update table status. (done — RESQ-13)
 - Staff can assign a queue entry to a table.
 
 ### Owner

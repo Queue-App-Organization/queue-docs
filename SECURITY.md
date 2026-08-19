@@ -81,6 +81,17 @@ Requirements:
 - Handle opt-out or blocked delivery states.
 - Do not send sensitive operational details to the wrong customer.
 
+Sender configuration (confirmed at RESQ-15): the WhatsApp provider is
+selected at runtime from environment variables only
+(`WHATSAPP_PROVIDER=log|twilio`, plus `TWILIO_ACCOUNT_SID`,
+`TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_FROM`). Credentials are injected at
+deploy time and never committed, echoed or logged. `log` is the
+credential-free default for local/dev: it records the send outcome without
+the phone number or message content. Every transactional send is recorded
+on `notification_events` (channel, template, status, provider message id,
+timestamps); a customer with a BLOCKED or OPTED_OUT delivery receives no
+further sends until staff resets the state.
+
 ## Audit Logging
 
 Record staff actions for:

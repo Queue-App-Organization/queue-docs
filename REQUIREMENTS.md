@@ -54,13 +54,13 @@ QR + Queue + Tables + WhatsApp + Basic Analytics
 
 MVP analytics should include:
 
-- Waiting now.
-- Average wait.
-- Longest wait.
-- Tables occupied.
-- Parties served.
-- No-shows.
-- Cancellations.
+- Waiting now. (done — RESQ-18)
+- Average wait. (done — RESQ-18)
+- Longest wait. (done — RESQ-18)
+- Tables occupied. (done — RESQ-18)
+- Parties served. (done — RESQ-18)
+- No-shows. (done — RESQ-18)
+- Cancellations. (done — RESQ-18)
 
 ## V1 Requirements
 

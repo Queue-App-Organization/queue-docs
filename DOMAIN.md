@@ -262,3 +262,27 @@ V2:
 - A table can be occupied by at most one active party unless table-combining is explicitly modeled.
 - Staff overrides must be recorded as events.
 - Customer-facing status should never expose internal operational confusion.
+
+## Analytics Metrics (RESQ-18)
+
+Exact event-derived definitions of the seven REQUIREMENTS.md MVP metrics.
+All are computed from the append-only event log only (DEC-006), for a day
+window `[day_start, day_end)` in the restaurant's timezone (converted to
+UTC for queries):
+
+1. **Waiting now** — parties in a non-terminal state at day end: for every
+   QUEUE_ENTRY event before day end, take the latest per entry and read its
+   `after.status`; count statuses in {WAITING, ALMOST_READY, CALLED,
+   ARRIVING, ARRIVED} (a called-but-unseated party is still waiting).
+2. **Average wait** — mean of `CUSTOMER_SEATED.occurred_at -
+   QUEUE_JOINED.occurred_at` over parties seated that day (whole minutes).
+3. **Longest wait** — max of the same durations.
+4. **Tables occupied** — tables whose latest state event before day end
+   (TABLE_CREATED / TABLE_ASSIGNED / TABLE_STATUS_CHANGED) has
+   `after.status == OCCUPIED`.
+5. **Parties served** — count of CUSTOMER_SEATED events in the window.
+6. **No-shows** — count of CUSTOMER_NO_SHOW events in the window.
+7. **Cancellations** — count of QUEUE_ENTRY_CANCELLED events in the window.
+
+Exposed to owners via `GET /owner/restaurants/{id}/analytics/daily?date=`
+(defaults to today in the restaurant timezone); owner role only.

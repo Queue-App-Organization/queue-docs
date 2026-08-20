@@ -245,6 +245,10 @@ MVP:
   log), falling back to 10 minutes per party before any party has been
   seated. Terminal entries (seated/cancelled/no-show/skipped) expose no
   position or ETA.
+- (RESQ-29) Join -> seat deltas longer than 240 minutes are closed-period
+  artifacts (overnight gaps, abandoned-then-seated parties), not seating
+  rates, and are excluded from the average so a few stale outliers cannot
+  inflate a short queue's ETA to hours.
 
 V1:
 

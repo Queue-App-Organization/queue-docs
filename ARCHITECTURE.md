@@ -192,6 +192,18 @@ Minimum observability:
 - Queue state transition logs.
 - WhatsApp delivery status logs.
 - Realtime connection health.
+
+Implemented at RESQ-17: WhatsApp delivery status is visible to staff in
+the live dashboard — each waiting-list entry carries its latest
+notification row (status, template, sent/failed timestamps, short error
+reason) and the SSE stream refreshes it within ~1.5s, so a failed send
+surfaces well inside the 30s reliability bar (REQUIREMENTS.md
+Reliability). Staff recover by re-sending the applicable notification for
+the entry (join confirmation while waiting; table-ready once called with
+an assigned table); every re-send records a new `notification_events`
+row. Delivery history per entry is queryable via the staff notifications
+endpoint. Per SECURITY.md WhatsApp Security, only delivery status is
+logged/shown — never message content or phone numbers.
 - Deployment history.
 - Basic business metrics.
 

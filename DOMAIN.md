@@ -212,6 +212,17 @@ terminal exit of an assigned entry (cancel / no-show / skip) releases the
 hold automatically. Seated entries keep their table link and the table
 stays OCCUPIED until staff mark it CLEANING (RESQ-13).
 
+Implemented at RESQ-16: when staff call a party whose entry holds an
+assigned table (T9 + T13), the system sends the WhatsApp table-ready
+message to that party's own customer and appends CUSTOMER_TABLE_READY_SENT
+with the notification outcome (template, delivery status, provider message
+id, table id) — the append-only log records the attempt; the mutable
+notification_events row tracks delivery status for staff visibility
+(T16/RESQ-17). The recipient is always the party's own customer (the
+customer row is reached only through the entry's customer_id), and a
+failed send never breaks the call action (the call is committed before the
+notification fires).
+
 V1:
 
 - System recommends compatible tables.

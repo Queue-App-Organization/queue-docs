@@ -217,6 +217,10 @@ The owner shouldn't need to monitor the queue constantly.
 
 ### Today's overview
 
+> Implemented at RESQ-19 — the owner analytics dashboard (`/analytics`)
+> renders the seven MVP metrics below for today, in the restaurant's
+> timezone, from the RESQ-18 daily metrics API.
+
 ```text
 Today's Operations
 

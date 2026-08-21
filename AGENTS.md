@@ -114,6 +114,22 @@ Use scoped permissions by agent role.
 - Add design notes, acceptance criteria, and workflow comments.
 - Commit design docs or frontend prototypes only when explicitly assigned.
 
+### Restaurant Domain Expert
+
+- Read all project tickets, especially product and design tickets.
+- Comment domain findings, rush-hour reality checks, and workflow risks on tickets.
+- Propose acceptance-criteria refinements.
+- Commit documentation updates under `queue-docs`.
+- No production code commits, no merges, no deploys.
+
+### Analytics Agent
+
+- Read product, engineering, and analytics tickets; comment instrumentation requirements and metric findings.
+- Commit event-taxonomy, metric-definition, and analytics docs under `queue-docs`.
+- Commit instrumentation code only on assigned tickets.
+- Read access to the event log / analytics store.
+- No production deploys; no direct pushes to protected branches.
+
 ## Hermes Responsibility
 
 Hermes coordinates tool usage; Hermes should not be the only tool gateway.
@@ -141,19 +157,17 @@ This avoids making Hermes a bottleneck and keeps work traceable to the agent tha
 
 ## Initial Agent Team
 
-Start with five agents:
+Start with nine agents:
 
-1. Product Manager / Orchestrator.
+1. Product Manager / Orchestrator (Hermes).
 2. UX / Product Designer.
-3. Full-Stack Engineer.
-4. QA Engineer.
-5. DevOps / Platform Engineer.
-
-Add later:
-
-- Restaurant Domain / Business Analyst once MVP workflows are real.
-- Analytics once usage data exists.
-- Separate Frontend and Backend agents when the codebase is large enough to justify the split.
+3. Frontend Engineer.
+4. Backend Engineer.
+5. QA Engineer.
+6. DevOps / Platform Engineer.
+7. Restaurant Domain Expert.
+8. Analytics.
+9. Financial Analyst / Pricing.
 
 ## Agent Responsibilities
 
@@ -173,9 +187,21 @@ Add later:
 - Keeps the staff interface dense, fast, and usable during rush periods.
 - Avoids marketing-style UI when building operational surfaces.
 
-### Full-Stack Engineer
+### Frontend Engineer
 
-- Owns implementation across frontend, backend, database, and integration code until the team splits.
+- Owns implementation of the customer mobile web, staff dashboard, and owner dashboard in `queue-web`.
+- Builds against the UX-approved flows and the API contract artifact from the backend ticket.
+- Keeps all API access behind a single typed client layer so contract changes touch one module.
+- Coordinates with the Backend Engineer through linked Jira tickets; questions, suggestions, and improvements travel as comments on linked tickets.
+- Implements features from Jira tickets and documented product/domain rules.
+- Updates relevant docs when implementation changes product or architecture behavior.
+- Creates pull requests with tests and verification notes.
+
+### Backend Engineer
+
+- Owns implementation of the API, database schema/migrations, domain events, and WhatsApp integration in `queue-api`.
+- Owns the API contract for each feature: written before implementation, referenced from the linked frontend ticket, updated on every contract change.
+- Coordinates with the Frontend Engineer through linked Jira tickets; questions, suggestions, and improvements travel as comments on linked tickets.
 - Implements features from Jira tickets and documented product/domain rules.
 - Updates relevant docs when implementation changes product or architecture behavior.
 - Creates pull requests with tests and verification notes.
@@ -192,16 +218,29 @@ Add later:
 - Ensures staging and production deployments are traceable.
 - Maintains logs, metrics, alerts, and rollback readiness.
 
-### Restaurant Domain / Business Analyst
+### Restaurant Domain Expert
 
-- Validates workflows against real Indian restaurant operations.
-- Identifies rush-hour realities, table-combining cases, family-party patterns, and staff constraints.
+- The permanent "would a restaurant actually want this?" reviewer for every customer-, staff-, table-, and WhatsApp-facing change.
+- Validates workflows against real Indian restaurant operations: rush-hour realities, walk-ins, family groups, large parties, table turnover, VIPs and regulars, and staff constraints.
+- Runs the domain checklist on product and design tickets before engineering starts (see `.agents/specs/restaurant-domain-expert.md`): staff load during lunch/dinner rush, no-smartphone customers, Indian phone numbers, WhatsApp fit, overstaying tables, delivery/takeaway traffic, and poor internet.
+- Guards the MVP boundary (no reservations, delivery, POS, or loyalty in MVP) from the operator's point of view.
+- Documents restaurant operational knowledge in `queue-docs` (DOMAIN.md, GLOSSARY.md, USERS.md).
 - Helps convert restaurant feedback into product requirements.
 
 ### Analytics
 
-- Owns product and operational metrics once real usage exists.
-- Measures queue conversion, seated conversion, wait-time accuracy, no-show rate, cancellation rate, table utilization, and restaurant weekly active usage.
+- Owns event taxonomy, instrumentation, metrics, dashboards, product analytics, restaurant analytics, and experimentation.
+- All metrics derive from the append-only event log; missing events are proposed to the Backend Engineer and are DoD-blocking.
+- Measures queue conversion, seated conversion, wait-time accuracy, no-show rate, cancellation rate, abandonment rate, table turnover and utilization, and restaurant weekly active usage.
+- Presents insights, not raw counts: every dashboard section pairs a number with a trend or segment comparison and a plain-language takeaway (e.g. "Your average Saturday wait is 38 minutes, and 17% of customers leave before being seated").
+- Documents every metric definition (formula, source events, dimensions) in `queue-docs`.
+
+### Financial Analyst / Pricing
+
+- Operates the startup financial model (`queue-docs/FINANCIALS.md`): revenue (MRR/ARR/ARPU, by plan, by restaurant, expansion, discounts, failed payments), costs (AI/API, cloud, database, SMS, WhatsApp, payment gateway, infrastructure, third-party SaaS, support, acquisition), and unit economics (CAC, LTV, gross/contribution margin, payback, revenue per restaurant, cost per restaurant).
+- Monitors cost per notification and messaging cost as % of ARPU — the queue-SaaS margin risk — and warns before messaging costs erode margins.
+- Produces pricing-strategy analysis and pricing memos; pricing decisions remain human-gated (founder, DEC-011).
+- Never fabricates numbers: actuals from provider invoices, estimates always marked with assumptions, data gaps flagged.
 
 ## Operating Model
 
@@ -212,11 +251,13 @@ Founder / Product Owner
 Product Orchestrator
         |
         +-> UX / Product Designer
-        +-> Full-Stack Engineer
+        +-> Frontend Engineer
+        +-> Backend Engineer
         +-> QA Engineer
         +-> DevOps / Platform Engineer
         +-> Restaurant Domain Expert
         +-> Analytics
+        +-> Financial Analyst / Pricing
         |
         v
 Jira + GitHub + Docs + CI/CD + Analytics
@@ -327,7 +368,7 @@ RESQ-100: BACKEND - code changes for feature
 Rules:
 
 - Use the exact Jira ticket key from the work item.
-- Use a clear uppercase agent name, such as `BACKEND`, `FRONTEND`, `FULLSTACK`, `QA`, `DEVOPS`, `UX`, `PM`, or `ANALYTICS`.
+- Use a clear uppercase agent name, such as `BACKEND`, `FRONTEND`, `QA`, `DEVOPS`, `UX`, `PM`, `RESTAURANT`, or `ANALYTICS`.
 - Keep the description concise and action-oriented.
 - Do not commit unrelated work under the same ticket.
 - If one change spans multiple agents, the implementing agent name should be used.
@@ -335,7 +376,7 @@ Rules:
 More examples:
 
 ```text
-RESQ-118: FULLSTACK - add queue entry cancellation
+RESQ-118: BACKEND - add queue entry cancellation
 RESQ-142: QA - cover no-show state transitions
 RESQ-156: DEVOPS - add staging deployment health checks
 RESQ-170: UX - refine staff table assignment flow
@@ -363,7 +404,25 @@ Ticket lifecycle (owner directive):
 
 - QA owns the QA statuses and tests every ticket with per-AC evidence.
 - A failed QA pass returns the ticket to `Code Review` (assigned back to the implementing agent with repros); the agent fixes on the same feature branch, then the ticket goes `Ready For QA → In QA` for re-testing. No ticket reaches `Ready For Deploy` without a passing QA pass, and no ticket reaches `Done` without the full flow.
+- The `Code Review` status is enforced by a lean reviewer pass — always a fresh context, never the implementing agent. It checks: security (secrets, injection, authz), logic errors, domain compliance (state machines per `DOMAIN.md`, FE/BE contract adherence), and test quality. Mechanics: static scans + review checklist from the `requesting-code-review` skill. Findings are posted as PR review comments plus a Jira comment.
+- A review that finds blockers returns the ticket to `In Progress` (`Back In Progress`) — same implementing agent (identified by commit prefix / agent labels), same feature branch — with the findings attached. The agent fixes, then `Ready For Review → Code Review` for a re-review of only the changed hunks. Non-blocking suggestions stay in the PR comments and never bounce the ticket.
+- Review-fix loops cap at 3 attempts, then escalate to the human. Every re-review uses a fresh context — an agent never verifies its own work.
 - `develop → uat` and `uat → main` promotions are PR-based and human/DEVOPS steps.
+- Performance-sensitive work (ETA/wait-time, queue-position queries, event-log writes, metrics aggregation, realtime) includes a profiling verification step: before/after evidence from the code-optimizer skill (`.agents/skills/code-optimizer/`), pytest gate after each refactor, max 3 attempts.
+
+### Epic taxonomy (DEC-015)
+
+Jira (RESQ) is organized around seven business-capability epics, not around agents. Agents work across epics; `wave-*` labels sequence builds, agent labels assign ownership.
+
+- **Queue Management** (RESQ-35) — join, position, ETA, call/skip/remove/seat, walk-ins, staff dashboard, open/close queue
+- **Table Management** (RESQ-36) — inventory, status lifecycle, assign/seat, combine/split (V1+)
+- **Customer Experience** (RESQ-37) — QR join, status page, cancel, WhatsApp/SMS updates, notifications orchestration
+- **Restaurant Management** (RESQ-38) — onboarding, hours, queue config, staff accounts, permissions, landing/setup
+- **Analytics** (RESQ-39) — wait time, no-show, peak hours, revenue impact (estimate)
+- **Billing** (RESQ-40) — SaaS plans/subscription/usage/payments (NOT in-restaurant payments)
+- **Platform / Foundation** (RESQ-41) — CI, data model/event log, auth, deploys, deferral trackers
+
+Every ticket belongs to exactly one epic; cross-capability work (e.g. seating) is never duplicated across epics. See `decisions/DEC-015-business-capability-epics.md`.
 
 ## Ticket Handoff Protocol
 

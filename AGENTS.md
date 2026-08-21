@@ -386,7 +386,7 @@ RESQ-170: UX - refine staff table assignment flow
 
 Branches (all code repos: queue-api, queue-web, queue-infrastructure):
 
-- `main` — production; merged only via release process (human).
+- `main` — production; merged via the SDLC promotion chain (Hermes, after QA pass + full test pass).
 - `develop` — integration branch for feature work.
 - `uat` — pre-production validation.
 - `feature/<jira-ticket-key>` — one ticket per branch, always branched from fresh `main` (never from another feature branch, never from develop/uat).
@@ -396,7 +396,7 @@ PR rules (hard — stacked PRs with wrong bases broke merges once; do not repeat
 - Feature PRs MUST target `develop` in code repos (`gh pr create --base develop`); queue-docs PRs target `main`. ALWAYS pass an explicit `--base` — never rely on tool auto-selection, which can pick the parent feature branch. Verify after opening (`gh pr view <n> --json baseRefName`) and fix with `gh pr edit` if wrong.
 - Fetch all refs (`git fetch origin`) before branching or rebasing; never `git fetch origin <single-branch>` when the local `origin/main` must be current.
 - PR title: `<KEY>: short summary`. PR body: Jira link, summary, acceptance criteria covered, tests run, validation performed, deployment/migration notes, docs updated.
-- Agents never merge PRs and never push to `main`, `develop`, `uat`, or `release/*`.
+- Merge authority (owner directive, Aug 2026): Hermes (orchestrator) performs merges following the SDLC. After a QA PASS, feature PRs merge to `develop` (re-test), then `develop → uat` (re-test), then `uat → main` (full test pass), then the ticket closes via `Deploy & Done`. Other agents never merge and never push to `main`, `develop`, `uat`, or `release/*`. High-risk and human-gated changes (below) still require human approval.
 
 Ticket lifecycle (owner directive):
 
@@ -407,7 +407,7 @@ Ticket lifecycle (owner directive):
 - The `Code Review` status is enforced by a lean reviewer pass — always a fresh context, never the implementing agent. It checks: security (secrets, injection, authz), logic errors, domain compliance (state machines per `DOMAIN.md`, FE/BE contract adherence), and test quality. Mechanics: static scans + review checklist from the `requesting-code-review` skill. Findings are posted as PR review comments plus a Jira comment.
 - A review that finds blockers returns the ticket to `In Progress` (`Back In Progress`) — same implementing agent (identified by commit prefix / agent labels), same feature branch — with the findings attached. The agent fixes, then `Ready For Review → Code Review` for a re-review of only the changed hunks. Non-blocking suggestions stay in the PR comments and never bounce the ticket.
 - Review-fix loops cap at 3 attempts, then escalate to the human. Every re-review uses a fresh context — an agent never verifies its own work.
-- `develop → uat` and `uat → main` promotions are PR-based and human/DEVOPS steps.
+- `develop → uat` and `uat → main` promotions are PR-based and executed by Hermes with re-testing at each hop (owner directive Aug 2026: agent-run merges by default).
 - Performance-sensitive work (ETA/wait-time, queue-position queries, event-log writes, metrics aggregation, realtime) includes a profiling verification step: before/after evidence from the code-optimizer skill (`.agents/skills/code-optimizer/`), pytest gate after each refactor, max 3 attempts.
 
 ### Epic taxonomy (DEC-015)

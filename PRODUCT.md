@@ -276,6 +276,12 @@ The onboarding needs to be extremely simple.
 > (name, address, timezone, operating hours) + owner account in one form at
 > `/setup`, then creates tables and downloads the check-in QR (RESQ-6
 > endpoint). Remaining in this section is purely print/place (offline).
+>
+> Queue-open on registration **(approved Sep 2026, ships in RESQ-48 work)**:
+> the restaurant's queue opens immediately as part of owner registration, so
+> staff never hit "no open queue" on day one and walk-ins work right away.
+> Staff retain explicit open/close control afterwards (`/queue/open`,
+> `/queue/close`, RESQ-32).
 
 ### Step 1
 

@@ -40,12 +40,16 @@ MVP:
 - Staff and owners must authenticate.
 - Customers should not need accounts.
 - Customer status pages should use unguessable tokens or scoped links.
-- Password recovery is self-service via WhatsApp OTP (RESQ-52, ships with
-  the backend; frontend RESQ-53): 6-digit code, 10-minute TTL, single-use,
-  max 10 attempts, neutral responses (no account enumeration), per-phone
-  and per-IP rate limits. Only OTP/reset-token hashes are stored. A
-  successful reset sets a bcrypt password, revokes all sessions, and
-  appends a PASSWORD_RESET audit event with no secrets in the payload.
+- Password recovery is self-service via email OTP (RESQ-52 backend,
+  RESQ-53 frontend): identity is the staff email, 6-digit code, 10-minute
+  TTL, single-use, max 10 attempts, neutral responses (no account
+  enumeration), per-identity and per-IP rate limits. Only OTP/reset-token
+  hashes are stored. A successful reset sets a bcrypt password, revokes
+  all sessions, and appends a PASSWORD_RESET audit event with no secrets
+  in the payload. Email sends via Resend (key + from address env-injected;
+  log provider in dev; production needs a verified domain, see RESQ-51).
+  WhatsApp OTP to the phone on file exists but stays disabled behind
+  `password_reset_whatsapp_enabled`.
 
 Later:
 

@@ -152,6 +152,26 @@ Later:
 
 This gives you much safer rollout.
 
+## Counter-service mode (table-optional)
+
+Locked 2026-09-21 (founder): the product serves any place queues form, not
+just seated restaurants. One `service_mode` per shop, chosen at onboarding:
+`SEATED` (tables, as today) or `COUNTER` (no tables — ice-cream counters,
+takeaway joints, doctor OPDs, passport offices).
+
+- Counter flow reuses the queue-entry machine: join → called → served, with
+  a `SERVICE_STARTED` audit event. No parallel lifecycle, no new states.
+- The token number is the customer identity: phone screen plus voice
+  announcement. No printed tokens.
+- No auto-assign in COUNTER mode — nothing to assign to. Table UI, copy,
+  validation, and table analytics are gated behind the mode.
+- Mode-aware copy and WhatsApp templates (token vs table-ready), and
+  counter analytics (tokens served/hr, service time, abandonment) replace
+  table metrics in COUNTER mode.
+- Onboarding forks: COUNTER shops skip table setup entirely.
+- Verticals (OPD, passport office) are configuration on the counter core:
+  completion label, call copy, resource model — not separate builds.
+
 ---
 
 # 6. Queue intelligence

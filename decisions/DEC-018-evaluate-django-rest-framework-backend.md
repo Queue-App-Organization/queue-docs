@@ -21,6 +21,13 @@ stacks can be compared. So far that has produced:
 - **The `drf` compose profile** in `queue-infrastructure` (RESQ-59):
   `api-drf` on host port 8001, with its own Postgres (`db-drf`) on host
   port 5431.
+- **A full port of `queue-api`** (RESQ-63, at the owner's direction): all
+  37 API operations, all 12 models with an equivalent schema (the
+  append-only trigger and partial unique indexes included), every service
+  and all 25 test files (401 tests). It runs under uvicorn (ASGI) so the
+  SSE dashboard stream is an async view. The contract is `queue-api`'s
+  OpenAPI spec at `develop` 38c61d1, pinned in
+  `queue-api-drf/contract/` and checked by a parity test.
 
 `queue-api` is not a blank slate. It implements the MVP wedge: queue and
 table state machines, the append-only event log with a DB-level
@@ -36,9 +43,11 @@ While the evaluation runs:
 
 - **`queue-api` remains the system of record.** `queue-web` keeps calling
   it, and all product tickets keep landing there.
-- **No duplicate feature work.** Domain logic is ported to
-  `queue-api-drf` only as an explicit evaluation slice under its own
-  ticket, never as a parallel implementation of in-flight features.
+- **Product work lands in `queue-api` only.** RESQ-63 replaced the
+  original "evaluation slice" rule with a one-off full port, frozen at
+  `queue-api` 38c61d1. New features are not built twice. Re-syncing the
+  port with later `queue-api` changes is a separate, ticketed decision,
+  taken only if the evaluation continues.
 - **Separate databases, always.** The two backends must never share a
   schema, because Alembic autogenerate would propose dropping Django's
   tables (RESQ-59).
@@ -53,9 +62,8 @@ plan.
 
 ## Evaluation criteria (proposed)
 
-The comparison should be based on a representative slice ported to DRF,
-not on the health-check scaffold alone. A suggested slice is queue join,
-then the queue-entry state machine, then event log append.
+With the full port in place (RESQ-63), the criteria can be judged on the
+whole API rather than on a slice, using the same test suite in both stacks.
 
 1. **Domain invariants.** Can the state machines and the append-only
    event log, including the DB-level immutability trigger, be expressed

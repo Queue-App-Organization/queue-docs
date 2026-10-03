@@ -177,12 +177,19 @@ reversible until real usage). Decided at RESQ-2 (Foundation wave), 2026-08-19.
 Queue-App-Organization/
   queue-docs/            docs (product, domain, architecture, security, decisions)
   queue-api/             backend API + event log
+  queue-api-drf/         EXPERIMENTAL Django REST Framework backend (DEC-018, under evaluation)
   queue-web/             frontend SPA (customer mobile web, staff dashboard, owner dashboard)
   queue-infrastructure/  docker-compose local stack, GitHub Actions CI, deploy tooling
 ```
 
 - **queue-api**: Python 3.12, FastAPI, SQLAlchemy 2 (async, asyncpg),
   Alembic migrations, Postgres 16. `/health` reports app + database status.
+  This is the system of record: `queue-web` calls it, and product work lands here.
+- **queue-api-drf** (experimental, DEC-018 *Proposed*): Django 6.1 + DRF
+  3.18, psycopg 3, gunicorn + WhiteNoise. Foundation only (`/health`, admin),
+  run locally via the opt-in compose `drf` profile with its own Postgres.
+  It is a side-by-side evaluation, not a replacement, until the founder
+  accepts DEC-018.
 - **queue-web**: React 18 + Vite + TypeScript (single SPA for all three
   surfaces in MVP).
 - **queue-infrastructure**: `docker-compose.yml` (db + api + web with

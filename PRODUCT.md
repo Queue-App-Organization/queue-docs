@@ -403,13 +403,10 @@ ARRIVED
 SEATED
 ```
 
-Exceptions:
-
-```text
-WAITING → CANCELLED
-WAITING → NO_SHOW
-CALLED → SKIPPED
-```
+This is the primary path only. The exception paths (cancel, no-show, skip) and
+the staff shortcuts are defined in `DOMAIN.md` (Queue Entry State Machine), which
+mirrors queue-api's transition matrix and is the single source of truth. Don't
+copy them here, because a copy drifts out of date (RESQ-61).
 
 This state machine will become extremely important because almost every feature depends on it.
 

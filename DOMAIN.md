@@ -169,7 +169,11 @@ TABLE_STATUS_CHANGED with the actor and before/after values.
 
 ## Domain Events
 
-Important events:
+The exact source of truth is `SeatingEventAction` in queue-api
+(`app/models/enums.py`). Every event goes into the same append-only
+`seating_events` log. Keep this list in sync with that enum.
+
+Operational events:
 
 - RESTAURANT_CREATED.
 - QUEUE_OPENED.
@@ -188,6 +192,18 @@ Important events:
 - TABLE_ASSIGNED.
 - CUSTOMER_SEATED.
 - SEATING_COMPLETED.
+- STAFF_OVERRIDE: records a staff override (see Key Invariants).
+- TOKEN_ANNOUNCED: counter call announcement, with no state change (RESQ-54).
+- SERVICE_STARTED: a counter party was served. The entry still ends in SEATED
+  (RESQ-56, DEC-017).
+
+Security audit events (SECURITY.md audit logging):
+
+- STAFF_LOGIN.
+- STAFF_LOGOUT.
+- STAFF_PROFILE_UPDATED.
+- PASSWORD_RESET.
+- CUSTOMER_TOKEN_ISSUED.
 
 ## Matching Rules
 

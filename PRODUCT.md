@@ -602,22 +602,10 @@ Restaurant
            └── Completed
 ```
 
-I would also make **events** first-class data.
-
-For example:
-
-```text
-QUEUE_JOINED
-CUSTOMER_CALLED
-CUSTOMER_ARRIVED
-CUSTOMER_SKIPPED
-TABLE_ASSIGNED
-CUSTOMER_SEATED
-TABLE_OCCUPIED
-TABLE_CLEANING
-TABLE_AVAILABLE
-QUEUE_CANCELLED
-```
+I would also make **events** first-class data, for example `QUEUE_JOINED`,
+`CUSTOMER_CALLED`, `CUSTOMER_SEATED` and `TABLE_STATUS_CHANGED`. The full list
+is in `DOMAIN.md` (Domain Events), which mirrors queue-api's event enum. Don't
+copy it here, because a copy drifts out of date (RESQ-62).
 
 That will make analytics and future intelligence dramatically easier.
 

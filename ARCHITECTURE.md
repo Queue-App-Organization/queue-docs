@@ -186,10 +186,11 @@ Queue-App-Organization/
   Alembic migrations, Postgres 16. `/health` reports app + database status.
   This is the system of record: `queue-web` calls it, and product work lands here.
 - **queue-api-drf** (experimental, DEC-018 *Proposed*): Django 6.1 + DRF
-  3.18, psycopg 3, gunicorn + WhiteNoise. Foundation only (`/health`, admin),
-  run locally via the opt-in compose `drf` profile with its own Postgres.
-  It is a side-by-side evaluation, not a replacement, until the founder
-  accepts DEC-018.
+  3.18, psycopg 3, uvicorn (ASGI) + WhiteNoise. A full port of `queue-api`
+  frozen at 38c61d1 (RESQ-63): the same 37-operation contract, schema and
+  tests. It runs locally via the opt-in compose `drf` profile with its own
+  Postgres. It is a side-by-side evaluation, not a replacement, until the
+  founder accepts DEC-018, and product work does not land here.
 - **queue-web**: React 18 + Vite + TypeScript (single SPA for all three
   surfaces in MVP).
 - **queue-infrastructure**: `docker-compose.yml` (db + api + web with

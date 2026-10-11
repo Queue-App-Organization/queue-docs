@@ -128,15 +128,15 @@ Audit events should include:
 
 - Customer link guessing.
 - Staff accessing another restaurant.
-- Spam or accidental repeat WhatsApp messages.
+- Spam or accidental repeat WhatsApp messages. Every public join sends one paid join confirmation to the phone entered, which may not be the joiner's, so unlimited joins (RESQ-66) let a script message arbitrary numbers repeatedly. Accepted risk; see the queue-flooding mitigations below.
 - Host accidentally seating the wrong party.
-- Malicious queue flooding through public QR links.
+- Malicious queue flooding through public QR links. Accepted risk while joins are unlimited (RESQ-66): staff can cancel/skip spam entries, and there is no automated control yet. Candidate mitigations (per-phone join-confirmation dedupe, bulk removal, join-volume alerts) are open for a founder/RESTAURANT decision.
 - Ex-staff retaining access.
 - Data export or deletion without approval.
 
 ## MVP Controls
 
-- Rate-limit public queue joins.
+- Public queue joins are intentionally **not** rate-limited (founder decision, 2026-10-11, RESQ-66). Per-IP limits apply to password reset; the client IP is the Fly edge's `Fly-Client-IP`, with IPv6 clients keyed by their /64.
 - Validate phone numbers.
 - Use CSRF protection where applicable.
 - Use secure, HTTP-only cookies for staff sessions.

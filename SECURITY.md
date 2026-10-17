@@ -85,7 +85,8 @@ Soft delete (queue-api-drf, RESQ-67):
 
 - Soft delete applies only to configuration and staff records: tables, sections, staff users and restaurants. It sets `is_deleted` and `deleted_at`, and the row, with any staff name, phone and email, stays in the database.
 - Customer records (customers, queue entries, access tokens, notifications) are never soft-deleted. A delete removes them, so "delete" never silently retains customer PII.
-- A soft-deleted staff member, or any staff of a soft-deleted restaurant, can no longer log in, and their existing sessions stop working.
+- A soft-deleted staff member, or any staff of a soft-deleted restaurant, can no longer log in. The soft delete also revokes their sessions and burns outstanding OTPs and reset tokens, so restoring the row never revives an old credential.
+- Soft-deleting a restaurant soft-deletes its staff, tables and sections. Its customer records are kept and are not soft-deleted; how long they are retained is an open founder decision.
 - Removing a soft-deleted row for good (`hard_delete()`), or deleting customer data, remains a human approval gate (see Human Approval Gates).
 
 ## WhatsApp Security

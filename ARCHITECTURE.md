@@ -187,10 +187,15 @@ Queue-App-Organization/
   This is the system of record: `queue-web` calls it, and product work lands here.
 - **queue-api-drf** (experimental, DEC-018 *Proposed*): Django 6.1 + DRF
   3.18, psycopg 3, uvicorn (ASGI) + WhiteNoise. A full port of `queue-api`
-  frozen at 38c61d1 (RESQ-63): the same 37-operation contract, schema and
-  tests. It runs locally via the opt-in compose `drf` profile with its own
-  Postgres. It is a side-by-side evaluation, not a replacement, until the
-  founder accepts DEC-018, and product work does not land here.
+  frozen at 38c61d1 (RESQ-63): the same 37-operation contract and tests.
+  RESQ-67 then restructured it (per-model modules, serializers package,
+  `permissions.py`) and added `BaseModel` / `SoftDeleteBaseModel`. Tables,
+  sections, staff and restaurants are soft-deleted (`is_deleted`,
+  `deleted_at`), so its schema now extends `queue-api`'s rather than
+  matching it column for column. It runs locally via the opt-in compose
+  `drf` profile with its own Postgres. It is a side-by-side evaluation, not a
+  replacement, until the founder accepts DEC-018, and product work does not
+  land here.
 - **queue-web**: React 18 + Vite + TypeScript (single SPA for all three
   surfaces in MVP).
 - **queue-infrastructure**: `docker-compose.yml` (db + api + web with

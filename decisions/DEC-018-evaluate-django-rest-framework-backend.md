@@ -28,6 +28,12 @@ stacks can be compared. So far that has produced:
   SSE dashboard stream is an async view. The contract is `queue-api`'s
   OpenAPI spec at `develop` 38c61d1, pinned in
   `queue-api-drf/contract/` and checked by a parity test.
+- **A DRF-native restructure** (RESQ-67): per-model modules, request and
+  response serializers, and abstract base models with soft delete for
+  tables, sections, staff and restaurants. The API contract is unchanged,
+  but the schema adds `is_deleted`, `deleted_at` and `updated_at` columns,
+  so it now extends `queue-api`'s schema. JWT staff auth is proposed
+  separately (RESQ-68) and needs its own decision.
 
 `queue-api` is not a blank slate. It implements the MVP wedge: queue and
 table state machines, the append-only event log with a DB-level

@@ -1,7 +1,7 @@
 # DEC-019: JWT staff authentication for queue-api-drf
 
 Date: 2026-10-18
-Status: Proposed (decision owner: founder). Must be Accepted before RESQ-68 build starts.
+Status: Accepted (founder, 2026-10-18), with option (b): a per-request `sid` check
 Relates to: DEC-018 (DRF evaluation), DEC-003 (no customer accounts), SECURITY.md (Authentication, MVP Controls), RESQ-68
 
 ## Context
@@ -14,7 +14,7 @@ Relates to: DEC-018 (DRF evaluation), DEC-003 (no customer accounts), SECURITY.m
 
 The owner asked for JWT staff auth in `queue-api-drf` (RESQ-67 point 4, split out to RESQ-68). The change is security-sensitive and changes the auth contract, so it needs this record before any build work. The owner chose the four options marked below on 2026-10-18.
 
-## Decision (proposed)
+## Decision
 
 ### Scope: `queue-api-drf` only (owner choice)
 
@@ -43,7 +43,7 @@ The owner asked for JWT staff auth in `queue-api-drf` (RESQ-67 point 4, split ou
   - The two cookie-bearing endpoints (`/auth/refresh`, `/auth/logout`) keep the existing CSRF origin check.
   - The middleware stays global. It is cheap, and it covers any future cookie use.
 - **XSS:**
-  - Script running on the page can read the in-memory access token. A copied token works elsewhere for 5 minutes at most.
+  - Script running on the page can read the in-memory access token. A copied token works elsewhere for 5 minutes at most, or until the family is revoked.
   - Script cannot read the refresh cookie, but it can still call `/auth/refresh` from the page, because the browser sends the cookie along. So while an XSS is live in the page, it can keep minting access tokens.
   - JWT doesn't fix XSS. queue-web keeps its CSP and escaping rules (SECURITY.md).
 - **Caching:** login, refresh and stream-ticket responses send `Cache-Control: no-store`.
@@ -68,15 +68,12 @@ The owner asked for JWT staff auth in `queue-api-drf` (RESQ-67 point 4, split ou
   | Password reset | Revokes every family of that staff member. |
   | Deactivation or soft delete (RESQ-67) | Every refresh fails. |
 
-- **Per-request check:**
-  - DRF needs `request.user`, so each request loads the staff row by `sub`, one primary-key lookup. This corrects the "no DB lookup per request" premise in the option you picked.
-  - Because of that lookup, deactivation and soft delete cut access **immediately**.
-  - Logout and password reset cut it **within the access-token lifetime (5 minutes or less)**.
-  - The SSE stream still cuts off within about 1.5 seconds, because of its per-tick family check.
-- **Open question for the owner, to settle at acceptance:** a lookup already runs on every request, so also checking that the token's `sid` family isn't revoked would cost one more indexed read. That would make logout and password reset immediate too. Choose one:
-  - **(a)** keep the 5-minute window, as written here;
-  - **(b)** add the `sid` check, so all revocation is immediate.
-- **SECURITY.md change:** under (a), the "immediate revocation" wording changes for `queue-api-drf` only, to "logout and password reset take effect within 5 minutes or less". Under (b), no change is needed.
+- **Per-request check (owner chose option (b) at acceptance):**
+  - Each request loads the staff row by `sub`; DRF needs `request.user` anyway.
+  - It also checks that the token's `sid` family is neither revoked nor expired, with one more indexed read.
+  - So logout, password reset, deactivation and soft delete all cut access **immediately**, as they do today. The SSE stream also re-checks both on every tick.
+  - The other option, keeping a window of up to 5 minutes for logout and reset to avoid that read, was declined.
+- **SECURITY.md:** revocation stays immediate, so no change to that wording is needed.
 
 ### 3. Signing: HS256 with `kid` (owner choice)
 
@@ -130,7 +127,7 @@ All other staff endpoints authenticate with Bearer. The 401 and 403 semantics an
 ## Consequences
 
 - **Data:** `staff_sessions` stays and becomes the refresh family table. Two new tables are added, refresh tokens and single-use stream tickets. All of them store hashes only, and no token material is logged. Old session cookies stop working; pre-customer, no migration path is needed (DEC-012).
-- **Revocation window:** logout and password reset now cut API access within 5 minutes or less instead of immediately. The stream still cuts off within about 1.5 seconds, and deactivation and soft delete stay immediate.
+- **Revocation:** stays immediate for logout, password reset, deactivation and soft delete, through the per-request `sid` and staff checks. The cost is two indexed reads per request.
 - **Approval gates:** the mandatory security pass applies to the build PR, and this record must be Accepted first (AGENTS.md: security-sensitive and major architecture change).
 
 ## Alternatives considered

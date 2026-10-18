@@ -125,6 +125,9 @@ The prototype uses **Server-Sent Events (SSE)**:
 - The stream's data source is `dashboard_event_generator` (queue-api),
   which re-reads committed state from Postgres per snapshot - correct in
   any deployment (multi-worker safe, no broker required).
+- Before each snapshot the stream also re-checks the staff session, so it
+  ends within ~1.5s of logout, password reset, deactivation or expiry
+  (RESQ-69, SECURITY.md MVP Controls).
 - WebSockets can replace SSE later if bidirectional traffic (e.g. live
   typing) ever justifies it.
 

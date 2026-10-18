@@ -140,6 +140,7 @@ Audit events should include:
 - Validate phone numbers.
 - Use CSRF protection where applicable.
 - Use secure, HTTP-only cookies for staff sessions.
+- Re-check the staff session on long-lived connections, not only when they open. The SSE dashboard stream re-resolves its session cookie before every snapshot (about every 1.5s) and ends once the session no longer grants access to that restaurant: logout, password reset, deactivation or expiry, plus soft delete of the staff member or restaurant in queue-api-drf. The check fails closed. The dashboard then gets a 401 on reconnect and returns to the landing page (RESQ-69).
 - Use HTTPS in production.
 - Encrypt secrets at rest through the hosting provider or secret manager.
 - Keep database backups.

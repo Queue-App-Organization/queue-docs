@@ -57,7 +57,7 @@ The owner asked for JWT staff auth in `queue-api-drf` (RESQ-67 point 4, split ou
   - Reusing it keeps logout, the revoke-all in password reset, the RESQ-67 soft-delete revocation and the RESQ-69 stream check working unchanged.
   - Each refresh token is a hashed row in a new table, linked to its family. A refresh consumes the presented token and issues a new one (rotation).
 - **Reuse detection, with a grace window:**
-  - Several tabs share one refresh cookie, and parallel 401s can refresh at the same moment. For **30 seconds** after a rotation, presenting the previous token therefore returns the family's current pair instead of revoking it.
+  - Several tabs share one refresh cookie, and parallel 401s can refresh at the same moment. For **30 seconds** after a rotation, presenting the previous token therefore returns a new access token instead of revoking anything. It sets no new cookie: the tab that rotated already set the current refresh cookie, which all tabs share. (Only hashes are stored, so the current refresh token can't be handed out again.) This clarifies how the grace window works; it does not change the decision.
   - Any other reuse of a used token revokes the whole family, because it has been stolen or replayed.
   - The client also refreshes single-flight (section 6).
 - **What each event does:**

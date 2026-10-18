@@ -53,7 +53,7 @@ The owner asked for JWT staff auth in `queue-api-drf` (RESQ-67 point 4, split ou
 - **Access token lifetime:** 5 minutes, set by `JWT_ACCESS_TTL_SECONDS` (default 300).
 - **Refresh families:**
   - Each login creates a refresh **family**.
-  - The existing `staff_sessions` table is reused as the family table. It already has `staff_user_id`, `expires_at` (absolute lifetime, 12 hours by default) and `revoked_at`.
+  - The existing `staff_sessions` table is reused as the family table. It already has `staff_user_id`, `expires_at` (absolute lifetime, `SESSION_TTL_HOURS`, 8 hours by default) and `revoked_at`.
   - Reusing it keeps logout, the revoke-all in password reset, the RESQ-67 soft-delete revocation and the RESQ-69 stream check working unchanged.
   - Each refresh token is a hashed row in a new table, linked to its family. A refresh consumes the presented token and issues a new one (rotation).
 - **Reuse detection, with a grace window:**

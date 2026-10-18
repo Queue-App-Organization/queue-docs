@@ -50,6 +50,22 @@ MVP:
   log provider in dev; production needs a verified domain, see RESQ-51).
   WhatsApp OTP to the phone on file exists but stays disabled behind
   `password_reset_whatsapp_enabled`.
+- `queue-api-drf` staff auth is JWT (DEC-019, RESQ-68). `queue-api` keeps
+  the HttpOnly session cookie.
+  - **Access token:** HS256, 5 minutes, sent as `Authorization: Bearer`.
+    It carries ids only (no PII) and a `kid`. Keys are env-injected
+    (`JWT_SIGNING_KEYS`) and startup fails without them outside local.
+  - **Refresh token:** opaque, rotating, in an HttpOnly cookie on `/auth`.
+    Hashes only are stored. Reuse more than 30s after rotation revokes the
+    whole login. The two cookie-bearing endpoints keep the CSRF origin check.
+  - **Revocation:** every request re-checks the login and the staff row, so
+    logout, password reset, deactivation and soft delete cut access
+    immediately, as with the cookie.
+  - **Dashboard stream:** authenticated by a single-use, 30-second, hashed
+    ticket. It may appear in access logs, which is accepted because it is
+    used or expired by the time anyone reads them.
+  - **XSS:** script running in the page can use the in-memory access token
+    and can call refresh, so CSP and escaping still matter.
 
 Later:
 

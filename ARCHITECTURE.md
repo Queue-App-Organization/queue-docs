@@ -192,7 +192,12 @@ Queue-App-Organization/
   `permissions.py`) and added `BaseModel` / `SoftDeleteBaseModel`. Tables,
   sections, staff and restaurants are soft-deleted (`is_deleted`,
   `deleted_at`), so its schema now extends `queue-api`'s rather than
-  matching it column for column. It runs locally via the opt-in compose
+  matching it column for column. Staff auth there is JWT (DEC-019, RESQ-68):
+  a 5-minute Bearer access token, a rotating HttpOnly refresh cookie on
+  `/auth`, and single-use tickets for the SSE stream. Every request re-checks
+  the login, so revocation stays immediate. Its auth contract differs from
+  `queue-api`'s by the delta in `contract/drf-auth-delta.json`; `queue-web`
+  still speaks cookies to `queue-api` (client work: RESQ-71). It runs locally via the opt-in compose
   `drf` profile with its own Postgres. It is a side-by-side evaluation, not a
   replacement, until the founder accepts DEC-018, and product work does not
   land here.
